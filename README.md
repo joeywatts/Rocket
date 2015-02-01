@@ -1,20 +1,16 @@
 # Rocket
-==============
 
 A simple Java socket library that wraps the complex non-blocking Java Socket API.
 
 ## Building
-=================
 
 *Rocket* uses Gradle, and is completely self-contained. Just clone the repo, and run `gradle jar`.
 
 ## Installation
-=====================
 
-[Download]() or build the *Rocket* jar file, and link it with your project.
+[Download](build/libs/rocket-0.1.jar) or build the *Rocket* jar file, and link it with your project.
 
 ## Usage
-==============
 
 In order to use *Rocket*, you must open a `LaunchPad`. A `LaunchPad` is an object from which you can launch `Rocket`s. To other computers, your `LaunchPad` is perceived as a `LandingZone`, because it is a potential landing zone for their `Rocket`s.
 
