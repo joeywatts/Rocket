@@ -52,7 +52,25 @@ For larger transfers, you can also attach a `RocketStream`, which is `byte` data
 
 ```java
 // Convenience method for sending large files.
-launchPad.prepareForLaunch().attach("file", RocketStream.createStreamFromFile(new File("file.txt"))).launch(lz);
+launchPad.prepareForLaunch().attach("file", 
+	RocketStream.createStreamFromFile(new File("file.txt")))
+	.launch(lz);
+
+// Custom RocketStream
+launchPad.prepareForLaunch("stream").attach("stream", 
+	RocketStream.createStream(new StreamData() {
+		@Override
+		public ByteBuffer getBuffer() {
+			// return the next buffer
+			return ByteBuffer.allocate(length).put(data).flip();
+		}
+
+		@Override
+		public boolean isFinished() {
+			// return true if there are no more buffers to send.
+			return true;
+		}
+	})).launch(lz);
 ```
 
 ### Receiving Data
@@ -70,7 +88,7 @@ launchPad.onLanding(new LandingListener() {
 
 `Rocket`s can be sent with tags to help process messages with multiple `LandingListener`s.
 
-```
+```java
 // Launching with a tag
 launchPad.prepareForLaunch("this is my tag").attach("data", 124565).launch(lz);
 
@@ -81,5 +99,40 @@ launchPad.onLanding(new LandingListener() {
 		int data = rocket.getInt("data");
 	}
 }, "this is my tag");
+```
+
+Larger data can be streamed in with a `RocketStream`.
+
+```java
+launchPad.onLanding(new LandingListener() {
+	@Override
+	public void onLanding(LaunchPad launchPad, Rocket rocket) {
+		RocketStream stream = rocket.getRocketStream("stream");
+		// let's write this stream to a file.
+		try {
+			final FileOutputStream fos = new FileOutputStream("data.txt");
+			stream.openStream(new StreamReader() {
+				@Override
+				public void onStreamData(ByteBuffer data) {
+					try {
+						fos.write(data.array(), data.position(), data.remaining());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				@Override
+				public void onStreamClosed() {
+					try {
+						fos.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+}, "stream");
 ```
 
