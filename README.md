@@ -10,6 +10,10 @@ A simple Java socket library that wraps the complex non-blocking Java Socket API
 
 [Download](build/libs/rocket-0.1.jar) or build the *Rocket* jar file, and link it with your project.
 
+**OR**
+
+Use [*JitPack*](https://jitpack.io/#joeywatts/Rocket/v0.1-alpha) to add it directly as a dependency to your Gradle or Maven project.
+
 ## Usage
 
 In order to use *Rocket*, you must open a `LaunchPad`. A `LaunchPad` is an object from which you can launch `Rocket`s. To other computers, your `LaunchPad` is perceived as a `LandingZone`, because it is a potential landing zone for their `Rocket`s.
@@ -81,7 +85,7 @@ To receive `Rocket`s that are sent to your `LaunchPad`, you must use a `LandingL
 launchPad.onLanding(new LandingListener() {
 	@Override
 	public void onLanding(LaunchPad launchPad, Rocket rocket) {
-		String text = rocket.getString(text);
+		String text = rocket.getString("key");
 	}
 });
 ```
